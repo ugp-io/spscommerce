@@ -2,7 +2,7 @@ package spscommerce
 
 import (
 	"fmt"
-	"net/url"
+	"strings"
 )
 
 const baseURL = "https://api.spscommerce.com/transactions"
@@ -38,16 +38,16 @@ func (s *TransactionServiceOp) GetTransaction(req GetTransactionRequest) (*GetTr
 
 func (s *TransactionServiceOp) TransactionHistory(req TransactionHistoryRequest) (*ListTransactionResponse, error) {
 
-	params := url.Values{}
+	var parts []string
 	if req.StartDate != nil {
-		params.Set("after", *req.StartDate)
+		parts = append(parts, "after="+*req.StartDate)
 	}
 	if req.EndDate != nil {
-		params.Set("until", *req.EndDate)
+		parts = append(parts, "until="+*req.EndDate)
 	}
 
 	var history ListTransactionResponse
-	if err := s.client.Request("GET", fmt.Sprintf("%v/v5/history?%v", baseURL, params.Encode()), nil, &history); err != nil {
+	if err := s.client.Request("GET", fmt.Sprintf("%v/v5/history?%v", baseURL, strings.Join(parts, "&")), nil, &history); err != nil {
 		return nil, err
 	}
 
