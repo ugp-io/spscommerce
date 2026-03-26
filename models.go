@@ -1,27 +1,38 @@
-package spscommerce
+package main
 
-type ListTransactionRequest struct{}
-type ListTransactionResponse struct {
-	Paging  Paging   `json:"paging"`
-	Results []Result `json:"results"`
+type CreateTransactionRequest struct {
+	FullDir     *string
+	Dir         string
+	File        string
+	Transaction Order
 }
+
 type GetTransactionRequest struct {
-	Dir     *string
-	File    *string
 	FullDir *string
+	Dir     string
+	File    string
 }
-type GetTransactionResponse struct {
-	PurchaseOrder Order
-}
-type ListInvoiceRequest struct{}
-type ListInvoiceResponse struct{}
-type GetInvoiceRequest struct{}
-type GetInvoiceResponse struct{}
-type CreateInvoiceRequest struct{}
-type CreateInvoiceResponse struct{}
+
 type TransactionHistoryRequest struct {
 	StartDate *string
 	EndDate   *string
+}
+
+type CreateTransactionResponse struct {
+	URL    string            `json:"url"`
+	Path   string            `json:"path"`
+	Status string            `json:"status"`
+	Error  map[string]string `json:"error,omitempty"`
+}
+
+type TransactionResponse struct {
+	PurchaseOrder Order
+	*ListTransactionResponse
+}
+
+type ListTransactionResponse struct {
+	Paging  Paging   `json:"paging"`
+	Results []Result `json:"results"`
 }
 
 type Order struct {
@@ -111,6 +122,8 @@ type Summary struct {
 type Result struct {
 	ID        string      `json:"id"`
 	Path      string      `json:"path"`
+	FullURL   string      `json:"url"`
+	Type      string      `json:"type"`
 	StoreMode string      `json:"store_mode"`
 	Direction string      `json:"direction"`
 	StatusLog []StatusLog `json:"status_log"`

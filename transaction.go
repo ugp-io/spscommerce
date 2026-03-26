@@ -1,4 +1,4 @@
-package spscommerce
+package main
 
 import (
 	"fmt"
@@ -12,28 +12,30 @@ type TransactionServiceOp struct {
 }
 
 type TransactionService interface {
-	ListTransaction(ListTransactionRequest) (*ListTransactionResponse, error)
-	GetTransaction(GetTransactionRequest) (*GetTransactionResponse, error)
+	GetTransaction(GetTransactionRequest) (*TransactionResponse, error)
 	TransactionHistory(TransactionHistoryRequest) (*ListTransactionResponse, error)
+	CreateTransaction(CreateTransactionRequest) (*CreateTransactionResponse, error)
+	ListTransaction(GetTransactionRequest) (*ListTransactionResponse, error)
 }
 
-func (s *TransactionServiceOp) GetTransaction(req GetTransactionRequest) (*GetTransactionResponse, error) {
+func (s *TransactionServiceOp) GetTransaction(req GetTransactionRequest) (*TransactionResponse, error) {
 
 	var po Order
-	url := baseURL + "/v5/data/"
-	if req.FullDir != nil {
-		url += *req.FullDir
-		if err := s.client.Request("GET", url, nil, &po); err != nil {
+	if req.FullDir != nil && *req.FullDir != "" {
+		if !strings.Contains(*req.FullDir, baseURL) {
+			*req.FullDir = baseURL + "/v5/data/" + *req.FullDir
+		}
+		if err := s.client.Request("GET", *req.FullDir, nil, &po); err != nil {
 			return nil, err
 		}
-	} else if req.File != nil && req.Dir != nil {
-		url += *req.Dir + "/" + *req.File
+	} else if req.File != "" && req.Dir != "" {
+		url := baseURL + "/v5/data/" + req.Dir + "/" + req.File
 		if err := s.client.Request("GET", url, nil, &po); err != nil {
 			return nil, err
 		}
 	}
 
-	return &GetTransactionResponse{PurchaseOrder: po}, nil
+	return &TransactionResponse{PurchaseOrder: po}, nil
 }
 
 func (s *TransactionServiceOp) TransactionHistory(req TransactionHistoryRequest) (*ListTransactionResponse, error) {
@@ -54,6 +56,40 @@ func (s *TransactionServiceOp) TransactionHistory(req TransactionHistoryRequest)
 	return &history, nil
 }
 
-func (s *TransactionServiceOp) ListTransaction(req ListTransactionRequest) (*ListTransactionResponse, error) {
-	return nil, nil
+func (s *TransactionServiceOp) CreateTransaction(req CreateTransactionRequest) (*CreateTransactionResponse, error) {
+
+	var resp CreateTransactionResponse
+	if req.FullDir != nil && *req.FullDir != "" {
+		if !strings.Contains(*req.FullDir, baseURL) {
+			*req.FullDir = baseURL + "/v5/data/" + *req.FullDir
+		}
+		if err := s.client.Request("POST", *req.FullDir, req.Transaction, &resp); err != nil {
+			return nil, err
+		}
+	} else if req.Dir != "" && req.File != "" {
+		url := baseURL + "/v5/data/" + req.Dir + "/" + req.File
+		if err := s.client.Request("POST", url, req.Transaction, &resp); err != nil {
+			return nil, err
+		}
+	}
+
+	return &resp, nil
+}
+
+func (s *TransactionServiceOp) ListTransaction(req GetTransactionRequest) (*ListTransactionResponse, error) {
+	var resp ListTransactionResponse
+	if req.FullDir != nil && *req.FullDir != "" {
+		if !strings.Contains(*req.FullDir, baseURL) {
+			*req.FullDir = baseURL + "/v5/data/" + *req.FullDir
+		}
+		if err := s.client.Request("GET", *req.FullDir, nil, &resp); err != nil {
+			return nil, err
+		}
+	} else if req.Dir != "" {
+		url := baseURL + "/v5/data/" + req.Dir
+		if err := s.client.Request("GET", url, nil, &resp); err != nil {
+			return nil, err
+		}
+	}
+	return &resp, nil
 }

@@ -1,4 +1,4 @@
-package spscommerce
+package main
 
 import (
 	"bytes"
@@ -64,7 +64,14 @@ func (c *Client) Request(method string, url string, body interface{}, v interfac
 	}
 	defer resp.Body.Close()
 
-	decoder := json.NewDecoder(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to read response: %w", err)
+	}
+
+	fmt.Println("Resp:", string(respBody))
+	fmt.Println(url)
+	decoder := json.NewDecoder(bytes.NewReader(respBody))
 	errDecode := decoder.Decode(&v)
 	if errDecode != nil {
 		return errDecode
@@ -114,9 +121,9 @@ func (c *Client) GetAccessToken() error {
 	}
 
 	if accessToken, ok := tokenResp["access_token"].(string); ok {
-		c.AccessToken = &accessToken
 		expiration := time.Now().Add(time.Duration(tokenResp["expires_in"].(float64)) * time.Second)
 		c.ExpiresAt = &expiration
+		c.AccessToken = &accessToken
 	}
 
 	return nil
