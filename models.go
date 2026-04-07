@@ -1,4 +1,4 @@
-package main
+package spscommerce
 
 type CreateTransactionRequest struct {
 	FullDir     *string
