@@ -3,6 +3,8 @@ package spscommerce
 import (
 	"fmt"
 	"strings"
+
+	"github.com/ugp-io/spscommerce/models"
 )
 
 const baseURL = "https://api.spscommerce.com/transactions"
@@ -12,33 +14,33 @@ type TransactionServiceOp struct {
 }
 
 type TransactionService interface {
-	GetTransaction(GetTransactionRequest) (*TransactionResponse, error)
-	TransactionHistory(TransactionHistoryRequest) (*ListTransactionResponse, error)
-	CreateTransaction(CreateTransactionRequest) (*CreateTransactionResponse, error)
-	ListTransaction(GetTransactionRequest) (*ListTransactionResponse, error)
+	GetTransaction(models.GetTransactionRequest) (*models.TransactionResponse, error)
+	TransactionHistory(models.TransactionHistoryRequest) (*models.ListTransactionResponse, error)
+	CreateTransaction(models.CreateTransactionRequest) (*models.CreateTransactionResponse, error)
+	ListTransaction(models.GetTransactionRequest) (*models.ListTransactionResponse, error)
 }
 
-func (s *TransactionServiceOp) GetTransaction(req GetTransactionRequest) (*TransactionResponse, error) {
+func (s *TransactionServiceOp) GetTransaction(req models.GetTransactionRequest) (*models.TransactionResponse, error) {
 
-	var po Order
+	var transaction interface{}
 	if req.FullDir != nil && *req.FullDir != "" {
 		if !strings.Contains(*req.FullDir, baseURL) {
 			*req.FullDir = baseURL + "/v5/data/" + *req.FullDir
 		}
-		if err := s.client.Request("GET", *req.FullDir, nil, &po); err != nil {
+		if err := s.client.Request("GET", *req.FullDir, nil, &transaction); err != nil {
 			return nil, err
 		}
 	} else if req.File != "" && req.Dir != "" {
 		url := baseURL + "/v5/data/" + req.Dir + "/" + req.File
-		if err := s.client.Request("GET", url, nil, &po); err != nil {
+		if err := s.client.Request("GET", url, nil, &transaction); err != nil {
 			return nil, err
 		}
 	}
 
-	return &TransactionResponse{PurchaseOrder: po}, nil
+	return &models.TransactionResponse{Transaction: transaction}, nil
 }
 
-func (s *TransactionServiceOp) TransactionHistory(req TransactionHistoryRequest) (*ListTransactionResponse, error) {
+func (s *TransactionServiceOp) TransactionHistory(req models.TransactionHistoryRequest) (*models.ListTransactionResponse, error) {
 
 	var parts []string
 	if req.StartDate != nil {
@@ -48,7 +50,7 @@ func (s *TransactionServiceOp) TransactionHistory(req TransactionHistoryRequest)
 		parts = append(parts, "until="+*req.EndDate)
 	}
 
-	var history ListTransactionResponse
+	var history models.ListTransactionResponse
 	if err := s.client.Request("GET", fmt.Sprintf("%v/v5/history?%v", baseURL, strings.Join(parts, "&")), nil, &history); err != nil {
 		return nil, err
 	}
@@ -56,9 +58,9 @@ func (s *TransactionServiceOp) TransactionHistory(req TransactionHistoryRequest)
 	return &history, nil
 }
 
-func (s *TransactionServiceOp) CreateTransaction(req CreateTransactionRequest) (*CreateTransactionResponse, error) {
+func (s *TransactionServiceOp) CreateTransaction(req models.CreateTransactionRequest) (*models.CreateTransactionResponse, error) {
 
-	var resp CreateTransactionResponse
+	var resp models.CreateTransactionResponse
 	if req.FullDir != nil && *req.FullDir != "" {
 		if !strings.Contains(*req.FullDir, baseURL) {
 			*req.FullDir = baseURL + "/v5/data/" + *req.FullDir
@@ -76,8 +78,8 @@ func (s *TransactionServiceOp) CreateTransaction(req CreateTransactionRequest) (
 	return &resp, nil
 }
 
-func (s *TransactionServiceOp) ListTransaction(req GetTransactionRequest) (*ListTransactionResponse, error) {
-	var resp ListTransactionResponse
+func (s *TransactionServiceOp) ListTransaction(req models.GetTransactionRequest) (*models.ListTransactionResponse, error) {
+	var resp models.ListTransactionResponse
 	if req.FullDir != nil && *req.FullDir != "" {
 		if !strings.Contains(*req.FullDir, baseURL) {
 			*req.FullDir = baseURL + "/v5/data/" + *req.FullDir

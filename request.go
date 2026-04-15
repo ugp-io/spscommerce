@@ -121,6 +121,7 @@ func (c *Client) GetAccessToken() error {
 	}
 
 	if accessToken, ok := tokenResp["access_token"].(string); ok {
+		fmt.Println(accessToken)
 		expiration := time.Now().Add(time.Duration(tokenResp["expires_in"].(float64)) * time.Second)
 		c.ExpiresAt = &expiration
 		c.AccessToken = &accessToken
