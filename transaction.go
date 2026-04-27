@@ -1,6 +1,8 @@
 package spscommerce
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -37,7 +39,19 @@ func (s *TransactionServiceOp) GetTransaction(req models.GetTransactionRequest) 
 		}
 	}
 
-	return &models.TransactionResponse{Transaction: transaction}, nil
+	var resp models.TransactionResponse
+	data, _ := json.Marshal(transaction) // v is your interface{}
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&resp.PurchaseOrder); err == nil {
+		return &resp, nil
+	} else if err := dec.Decode(&resp.Invoice); err == nil {
+		return &resp, nil
+	} else if err := dec.Decode(&resp.Default); err == nil {
+		return &resp, nil
+	}
+
+	return nil, nil
 }
 
 func (s *TransactionServiceOp) TransactionHistory(req models.TransactionHistoryRequest) (*models.ListTransactionResponse, error) {

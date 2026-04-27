@@ -1,9 +1,9 @@
 package models
 
 type Invoice struct {
-	Header   *Header     `json:"Header,omitempty"`
-	LineItem *[]LineItem `json:"LineItem,omitempty"`
-	Summary  *Summary    `json:"Summary,omitempty"`
+	Header    *Header     `json:"Header,omitempty"`
+	LineItems *[]LineItem `json:"LineItem,omitempty"`
+	Summary   *Summary    `json:"Summary,omitempty"`
 }
 
 type InvoiceHeader struct {
@@ -81,6 +81,6 @@ type InvoiceLine struct {
 	SellerDateCode                  *string                  `json:"SellerDateCode,omitempty"`
 	CashDiscount                    *string                  `json:"CashDiscount,omitempty"`
 	SaleOrService                   *string                  `json:"SaleOrService,omitempty"`
-	ProductID                       *[]ProductID             `json:"ProductID,omitempty"`
+	ProductIDs                      *[]ProductID             `json:"ProductID,omitempty"`
 	NRFStandardColorAndSize         *NRFStandardColorAndSize `json:"NRFStandardColorAndSize,omitempty"`
 }

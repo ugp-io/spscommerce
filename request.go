@@ -69,8 +69,8 @@ func (c *Client) Request(method string, url string, body interface{}, v interfac
 		return fmt.Errorf("failed to read response: %w", err)
 	}
 
-	fmt.Println("Resp:", string(respBody))
-	fmt.Println(url)
+	// fmt.Println("Resp:", string(respBody))
+	// fmt.Println(url)
 	decoder := json.NewDecoder(bytes.NewReader(respBody))
 	errDecode := decoder.Decode(&v)
 	if errDecode != nil {
@@ -121,7 +121,7 @@ func (c *Client) GetAccessToken() error {
 	}
 
 	if accessToken, ok := tokenResp["access_token"].(string); ok {
-		fmt.Println(accessToken)
+		// fmt.Println(accessToken)
 		expiration := time.Now().Add(time.Duration(tokenResp["expires_in"].(float64)) * time.Second)
 		c.ExpiresAt = &expiration
 		c.AccessToken = &accessToken

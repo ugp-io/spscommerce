@@ -1,9 +1,9 @@
 package models
 
 type Order struct {
-	Header   *Header     `json:"Header,omitempty"`
-	LineItem *[]LineItem `json:"LineItem,omitempty"`
-	Summary  *Summary    `json:"Summary,omitempty"`
+	Header    *Header     `json:"Header,omitempty"`
+	LineItems *[]LineItem `json:"LineItem,omitempty"`
+	Summary   *Summary    `json:"Summary,omitempty"`
 }
 
 type Header struct {
@@ -12,13 +12,13 @@ type Header struct {
 	Addresses                     *[]Address                      `json:"Address,omitempty"`
 	CarrierInformation            *[]CarrierInformation           `json:"CarrierInformation,omitempty"`
 	Dates                         *[]Date                         `json:"Dates,omitempty"`
-	PaymentTerms                  *[]PaymentTerms                 `json:"PaymentTerms,omitempty"`
+	PaymentTerms                  *[]PaymentTerm                  `json:"PaymentTerms,omitempty"`
 	References                    *[]Reference                    `json:"References,omitempty"`
 	ChargesAllowances             *[]ChargesAllowance             `json:"ChargesAllowances,omitempty"`
 	Contacts                      *[]Contact                      `json:"Contacts,omitempty"`
 	FOBRelatedInstructions        *[]FOBRelatedInstruction        `json:"FOBRelatedInstruction,omitempty"`
 	Notes                         *[]Note                         `json:"Notes,omitempty"`
-	QuantityTotals                *[]QuantityTotals               `json:"QuantityTotals,omitempty"`
+	QuantityTotals                *[]QuantityTotal                `json:"QuantityTotals,omitempty"`
 	Commodity                     *[]Commodity                    `json:"Commodity,omitempty"`
 	Taxes                         *[]Tax                          `json:"Taxes,omitempty"`
 	MonetaryAmounts               *[]MonetaryAmount               `json:"MonetaryAmounts,omitempty"`
@@ -29,12 +29,13 @@ type Header struct {
 	Packaging                     *[]Packaging                    `json:"Packaging,omitempty"`
 	CarrierSpecialHandlingDetails *[]CarrierSpecialHandlingDetail `json:"CarrierSpecialHandlingDetail,omitempty"`
 	MarksAndNumbersCollections    *[]MarksAndNumbersCollection    `json:"MarksAndNumbersCollection,omitempty"`
-	RestrictionsOrConditions      *[]RestrictionsOrCondition      `json:"RestrictionsOrConditions,omitempty"`
+	RestrictionsOrConditions      *[]RestrictionOrCondition       `json:"RestrictionsOrConditions,omitempty"`
 	LeadTimes                     *[]LeadTime                     `json:"LeadTime,omitempty"`
 }
 
 type LineItem struct {
 	OrderLine                    *OrderLine                      `json:"OrderLine,omitempty"`
+	InvoiceLine                  *InvoiceLine                    `json:"InvoiceLine,omitempty"`
 	Contacts                     *[]Contact                      `json:"Contacts,omitempty"`
 	Dates                        *[]Date                         `json:"Dates,omitempty"`
 	Measurements                 *[]Measurement                  `json:"Measurements,omitempty"`
@@ -42,32 +43,30 @@ type LineItem struct {
 	ProductOrItemDescription     *[]ProductOrItemDescription     `json:"ProductOrItemDescription,omitempty"`
 	Paperwork                    *[]Paperwork                    `json:"Paperwork,omitempty"`
 	PhysicalDetails              *[]PhysicalDetail               `json:"PhysicalDetails,omitempty"`
-	PalletInformations           []PalletInformation             `json:"PalletInformation,omitempty"`
+	PalletInformations           *[]PalletInformation            `json:"PalletInformation,omitempty"`
 	References                   *[]Reference                    `json:"References,omitempty"`
 	Notes                        *[]Note                         `json:"Notes,omitempty"`
 	FloorReady                   *[]FloorReady                   `json:"FloorReady,omitempty"`
-	Address                      *[]Address                      `json:"Address,omitempty"`
+	Addresses                    *[]Address                      `json:"Address,omitempty"`
 	Subline                      *[]Subline                      `json:"Subline,omitempty"`
 	QuantitiesSchedulesLocations *[]QuantitiesSchedulesLocations `json:"QuantitiesSchedulesLocations,omitempty"`
 	Taxes                        *[]Tax                          `json:"Taxes,omitempty"`
 	ChargesAllowances            *[]ChargesAllowance             `json:"ChargesAllowances,omitempty"`
-	PaymentTerms                 *[]PaymentTerms                 `json:"PaymentTerms,omitempty"`
+	PaymentTerms                 *[]PaymentTerm                  `json:"PaymentTerms,omitempty"`
 	ConditionOfSale              *[]ConditionOfSale              `json:"ConditionOfSale,omitempty"`
 	FOBRelatedInstruction        *[]FOBRelatedInstruction        `json:"FOBRelatedInstruction,omitempty"`
 	Commodity                    *[]Commodity                    `json:"Commodity,omitempty"`
 	CarrierInformation           *[]CarrierInformation           `json:"CarrierInformation,omitempty"`
 	CarrierSpecialHandlingDetail *[]CarrierSpecialHandlingDetail `json:"CarrierSpecialHandlingDetail,omitempty"`
 	MarksAndNumbersCollection    *[]MarksAndNumbersCollection    `json:"MarksAndNumbersCollection,omitempty"`
-	RestrictionsOrConditions     *[]RestrictionsOrCondition      `json:"RestrictionsOrConditions,omitempty"`
+	RestrictionsOrConditions     *[]RestrictionOrCondition       `json:"RestrictionsOrConditions,omitempty"`
 	Packaging                    *[]Packaging                    `json:"Packaging,omitempty"`
 	MonetaryAmounts              *[]MonetaryAmount               `json:"MonetaryAmounts,omitempty"`
 	RegulatoryCompliances        *[]RegulatoryCompliance         `json:"RegulatoryCompliances,omitempty"`
-	MasterItemAttribute          struct {
+	LineItemAcknowledgements     *[]LineItemAcknowledgement      `json:"LineItemAcknowledgement,omitempty"`
+	MasterItemAttribute          *struct {
 		ItemAttributes []ItemAttribute `json:"ItemAttributes,omitempty"`
 	} `json:"MasterItemAttribute,omitempty"`
-
-	InvoiceLine              *InvoiceLine               `json:"InvoiceLine,omitempty"`
-	LineItemAcknowledgements *[]LineItemAcknowledgement `json:"LineItemAcknowledgement,omitempty"`
 }
 
 type Summary struct {
@@ -152,7 +151,7 @@ type CarrierInformation struct {
 	TransitTimeQual          *string             `json:"TransitTimeQual,omitempty"`
 	TransitTime              *float64            `json:"TransitTime,omitempty"`
 	ServiceLevelCodes        *[]ServiceLevelCode `json:"ServiceLevelCodes,omitempty"`
-	Address                  *[]Address          `json:"Address,omitempty"`
+	Addresses                *[]Address          `json:"Address,omitempty"`
 	SealNumbers              *[]SealNumber       `json:"SealNumbers,omitempty"`
 }
 
@@ -163,7 +162,7 @@ type Date struct {
 	DateTimePeriod    *string `json:"DateTimePeriod,omitempty"`
 }
 
-type PaymentTerms struct {
+type PaymentTerm struct {
 	TermsType                *string  `json:"TermsType,omitempty"`
 	TermsBasisDateCode       *string  `json:"TermsBasisDateCode,omitempty"`
 	TermsTimeRelationCode    *string  `json:"TermsTimeRelationCode,omitempty"`
@@ -188,12 +187,12 @@ type PaymentTerms struct {
 }
 
 type Reference struct {
-	ReferenceQual *string     `json:"ReferenceQual,omitempty"`
-	ReferenceID   *string     `json:"ReferenceID,omitempty"`
-	Description   *string     `json:"Description,omitempty"`
-	Date          *string     `json:"Date,omitempty"`
-	Time          *string     `json:"Time,omitempty"`
-	ReferenceIDs  []Reference `json:"ReferenceIDs,omitempty"`
+	ReferenceQual *string      `json:"ReferenceQual,omitempty"`
+	ReferenceID   *string      `json:"ReferenceID,omitempty"`
+	Description   *string      `json:"Description,omitempty"`
+	Date          *string      `json:"Date,omitempty"`
+	Time          *string      `json:"Time,omitempty"`
+	ReferenceIDs  *[]Reference `json:"ReferenceIDs,omitempty"`
 }
 
 type ChargesAllowance struct {
@@ -245,7 +244,7 @@ type Note struct {
 	LanguageCode *string `json:"LanguageCode,omitempty"`
 }
 
-type QuantityTotals struct {
+type QuantityTotal struct {
 	QuantityTotalsQualifier *string  `json:"QuantityTotalsQualifier,omitempty"`
 	Quantity                *float64 `json:"Quantity,omitempty"`
 	QuantityUOM             *string  `json:"QuantityUOM,omitempty"`
@@ -353,7 +352,7 @@ type MarksAndNumbersCollection struct {
 	MarksAndNumbers1          *string `json:"MarksAndNumbers1,omitempty"`
 }
 
-type RestrictionsOrCondition struct {
+type RestrictionOrCondition struct {
 	RestrictionsConditionsQualifier *string  `json:"RestrictionsConditionsQualifier,omitempty"`
 	Description                     *string  `json:"Description,omitempty"`
 	QuantityQualifier               *string  `json:"QuantityQualifier,omitempty"`
@@ -439,11 +438,41 @@ type NRFStandardColorAndSize struct {
 }
 
 type LineItemAcknowledgement struct {
-	ItemScheduleDate      *string  `json:"ItemScheduleDate,omitempty"`
-	ItemScheduleQty       *float64 `json:"ItemScheduleQty,omitempty"`
-	ItemScheduleQualifier *string  `json:"ItemScheduleQualifier,omitempty"`
-	ItemScheduleUOM       *string  `json:"ItemScheduleUOM,omitempty"`
-	ItemStatusCode        *string  `json:"ItemStatusCode,omitempty"`
+	LineSequenceNumber              *string      `json:"LineSequenceNumber,omitempty"`
+	ItemScheduleDate                *string      `json:"ItemScheduleDate,omitempty"`
+	ItemScheduleQty                 *float64     `json:"ItemScheduleQty,omitempty"`
+	ItemScheduleQualifier           *string      `json:"ItemScheduleQualifier,omitempty"`
+	ItemScheduleUOM                 *string      `json:"ItemScheduleUOM,omitempty"`
+	ItemStatusCode                  *string      `json:"ItemStatusCode,omitempty"`
+	BuyerPartNumber                 *string      `json:"BuyerPartNumber,omitempty"`
+	VendorPartNumber                *string      `json:"VendorPartNumber,omitempty"`
+	ConsumerPackageCode             *string      `json:"ConsumerPackageCode,omitempty"`
+	EAN                             *string      `json:"EAN,omitempty"`
+	GTIN                            *string      `json:"GTIN,omitempty"`
+	UPCCaseCode                     *string      `json:"UPCCaseCode,omitempty"`
+	NatlDrugCode                    *string      `json:"NatlDrugCode,omitempty"`
+	InternationalStandardBookNumber *string      `json:"InternationalStandardBookNumber,omitempty"`
+	PurchasePriceType               *string      `json:"PurchasePriceType,omitempty"`
+	PurchasePrice                   *float64     `json:"PurchasePrice,omitempty"`
+	PurchasePriceBasis              *string      `json:"PurchasePriceBasis,omitempty"`
+	BuyersCurrency                  *string      `json:"BuyersCurrency,omitempty"`
+	SellersCurrency                 *string      `json:"SellersCurrency,omitempty"`
+	ExchangeRate                    *float64     `json:"ExchangeRate,omitempty"`
+	ExtendedItemTotal               *float64     `json:"ExtendedItemTotal,omitempty"`
+	ProductSizeCode                 *string      `json:"ProductSizeCode,omitempty"`
+	ProductSizeDescription          *string      `json:"ProductSizeDescription,omitempty"`
+	ProductColorCode                *string      `json:"ProductColorCode,omitempty"`
+	ProductColorDescription         *string      `json:"ProductColorDescription,omitempty"`
+	ProductMaterialCode             *string      `json:"ProductMaterialCode,omitempty"`
+	ProductMaterialDescription      *string      `json:"ProductMaterialDescription,omitempty"`
+	ProductProcessCode              *string      `json:"ProductProcessCode,omitempty"`
+	ProductProcessDescription       *string      `json:"ProductProcessDescription,omitempty"`
+	Department                      *string      `json:"Department,omitempty"`
+	DepartmentDescription           *string      `json:"DepartmentDescription,omitempty"`
+	Class                           *string      `json:"Class,omitempty"`
+	Gender                          *string      `json:"Gender,omitempty"`
+	IndustryCode                    *string      `json:"IndustryCode,omitempty"`
+	ProductIDs                      *[]ProductID `json:"ProductID,omitempty"`
 }
 
 type PriceInformation struct {
@@ -547,7 +576,7 @@ type Subline struct {
 	FloorReady               *[]FloorReady               `json:"FloorReady,omitempty"`
 	Taxes                    *[]Tax                      `json:"Taxes,omitempty"`
 	ChargesAllowances        *[]ChargesAllowance         `json:"ChargesAllowances,omitempty"`
-	Address                  *[]Address                  `json:"Address,omitempty"`
+	Addresses                *[]Address                  `json:"Address,omitempty"`
 	Commodity                *[]Commodity                `json:"Commodity,omitempty"`
 	RegulatoryCompliances    *[]RegulatoryCompliance     `json:"RegulatoryCompliances,omitempty"`
 }

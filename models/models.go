@@ -26,7 +26,9 @@ type CreateTransactionResponse struct {
 }
 
 type TransactionResponse struct {
-	Transaction interface{}
+	PurchaseOrder *Order
+	Invoice       *Invoice
+	Default       map[string]interface{}
 }
 
 type ListTransactionResponse struct {
